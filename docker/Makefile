@@ -2,7 +2,8 @@
 # Variables
 ##################
 
-DOCKER_COMPOSE = docker compose -f ./docker/docker-compose.yml --env-file ./docker/.env
+DOCKER_COMPOSE_YML = ./docker-compose.yml
+DOCKER_COMPOSE = docker compose -f ${DOCKER_COMPOSE_YML} --env-file ./.env
 DOCKER_COMPOSE_PHP_FPM_EXEC = ${DOCKER_COMPOSE} exec -u www-data php-fpm
 
 ##################
@@ -39,7 +40,7 @@ dc_restart:
 ##################
 
 app_bash:
-	${DOCKER_COMPOSE} exec -u www-data php-fpm bash
+	${DOCKER_COMPOSE} exec -u root php-fpm bash
 php:
 	${DOCKER_COMPOSE} exec -u www-data php-fpm bash
 test:
@@ -47,8 +48,8 @@ test:
 jwt:
 	${DOCKER_COMPOSE} exec -u www-data php-fpm bin/console lexik:jwt:generate-keypair
 cache:
-	docker-compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bin/console cache:clear
-	docker-compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bin/console cache:clear --env=test
+	docker-compose -f ${DOCKER_COMPOSE_YML} exec -u www-data php-fpm bin/console cache:clear
+	docker-compose -f ${DOCKER_COMPOSE_YML} exec -u www-data php-fpm bin/console cache:clear --env=test
 
 ##################
 # Database
@@ -59,7 +60,7 @@ db_migrate:
 db_diff:
 	${DOCKER_COMPOSE} exec -u www-data php-fpm bin/console doctrine:migrations:diff --no-interaction
 db_drop:
-	docker-compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bin/console doctrine:schema:drop --force
+	docker-compose -f ${DOCKER_COMPOSE_YML} exec -u www-data php-fpm bin/console doctrine:schema:drop --force
 
 
 ##################
